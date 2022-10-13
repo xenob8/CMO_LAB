@@ -1,12 +1,4 @@
-import time
-from functools import reduce
-
-from observers.sources_processor import QueryT
-from source import Source
-from observers import Event
-from observers import NotificationService
-from heapq import heappop, heappush
-from datetime import datetime, timedelta
+from datetime import datetime
 
 print(str(datetime.now().strftime()))
 
