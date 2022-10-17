@@ -21,13 +21,14 @@ class LoadInstrumentDispatcher(Handler):
             query.state = Event.IN_INSTRUMENT
 
     def push_instrument(self, query: QueryT):
-        free_instr = self.__find_free_instrument()
-        end_time = free_instr.run()
+        free_instr, n_instr = self.__find_free_instrument()
+        end_time = free_instr.run(query)
+        query.n_instr = n_instr
         query.start_time = query.end_time
         query.end_time = my_time.time + end_time
         heappush(self.heap_queries, query)
 
-    def __find_free_instrument(self) -> Instrument:
-        for instr in self.instruments:
+    def __find_free_instrument(self) -> (Instrument, int):
+        for i, instr in enumerate(self.instruments):
             if not instr.is_busy:
-                return instr
+                return instr, i

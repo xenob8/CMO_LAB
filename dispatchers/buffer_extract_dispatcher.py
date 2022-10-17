@@ -21,6 +21,8 @@ class BufferExtractDispatcher(Handler):
             return
 
         if self.__is_avaliable_instrument():
+            print("is aval instr? True")
+            print("Instruments", [i.is_busy for i in self.instruments])
             q = self.__find_query_by_packet(self.priority_packet) or self.__find_min_by_source_n()
             self.priority_packet = q.n_source
             self.buffers.remove(q)
@@ -52,7 +54,7 @@ class BufferExtractDispatcher(Handler):
 
 
     def __is_avaliable_instrument(self):
-        return any(not instr.is_busy for instr in self.instruments)
+        return any(instr.is_busy==False for instr in self.instruments)
 
     def __find_next_query_by_packet(self, n_source):
         return min((query for query in self.buffers if query.n_source == n_source),

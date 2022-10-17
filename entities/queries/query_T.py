@@ -22,3 +22,6 @@ class QueryT():
 
     def __repr__(self):
         return self.__str__()
+
+    def point_to_str(self):
+        return f'({self.n_source}, {self.n_query})'

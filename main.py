@@ -1,8 +1,6 @@
-from time import sleep
-
-
-from datetime import datetime
+from copy import copy
 from heapq import *
+import random
 
 import constants
 import my_time
@@ -14,8 +12,9 @@ from dispatchers.load_instrument_dispatcher import LoadInstrumentDispatcher
 from utils.sources_processor import SourcesProcessor, QueryT
 from entities.source import Source
 
+random.seed(10)
 sources = [Source(0.3) for _ in range(0, constants.N_SOURCES)]
-instruments = [Instrument(0.3) for _ in range(0, constants.N_SOURCES)]
+instruments = [Instrument(0.3) for _ in range(0, constants.N_INSTUMENTS)]
 buffers: list[QueryT] = []
 heap_que = []
 sp = SourcesProcessor(sources=sources, heap_que=heap_que)
@@ -29,26 +28,46 @@ sp.set_next_handler(put_disp).set_next_handler(extract_disp).set_next_handler(lo
 sp.gather_queries()
 # print(que)
 
-while heap_que:
+# while heap_que:
+#     print("HEAPQUE")
+#     print(heap_que)
+#     print("BUFFERS")
+#     print(buffers)
+#     que_query: QueryT = heappop(heap_que)
+#     if que_query.end_time > my_time.time:
+#         sleep(que_query.end_time - my_time.time)
+#         my_time.time = que_query.end_time
+#
+#     print("NEW STATE:\n", que_query)
+#     if que_query.state == Event.WAITING_SOURCE:
+#         sp.handle(que_query)
+#     elif que_query.state == Event.IN_INSTRUMENT:
+#         instruments[que_query.n_source].release()
+#         print("RELEASE INSTRUMENT HANDLER")
+#         extract_disp.handle()
+#
+#     print("priority packet:", extract_disp.priority_packet)
+
+def update():
     print("HEAPQUE")
     print(heap_que)
     print("BUFFERS")
     print(buffers)
     que_query: QueryT = heappop(heap_que)
+    que_input = copy(que_query)
     if que_query.end_time > my_time.time:
-        sleep(que_query.end_time - my_time.time)
+        # sleep(que_query.end_time - my_time.time)
         my_time.time = que_query.end_time
 
     print("NEW STATE:\n", que_query)
     if que_query.state == Event.WAITING_SOURCE:
         sp.handle(que_query)
     elif que_query.state == Event.IN_INSTRUMENT:
-        instruments[que_query.n_source].release()
+        instruments[que_query.n_instr].release()
+        put_disp.refused_query = None
         print("RELEASE INSTRUMENT HANDLER")
         extract_disp.handle()
 
     print("priority packet:", extract_disp.priority_packet)
+    return que_input
 
-
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
