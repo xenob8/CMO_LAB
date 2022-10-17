@@ -2,7 +2,6 @@ from copy import copy
 from functools import reduce
 
 from handlers.handler import Handler
-from utils import Event
 from entities.instrument import Instrument
 from utils.sources_processor import QueryT
 
@@ -38,7 +37,6 @@ class BufferExtractDispatcher(Handler):
     def handle(self):
         query = self.get_query()
         if query:
-            query.state = Event.READY_TO_SERVICE
             self.next_step_handler.handle(query)
 
 

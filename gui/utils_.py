@@ -8,8 +8,8 @@ import constants
 # from gui_entities import QueryT
 
 import main
+from entities import QueryState
 from gui_entities import GuiElement
-from utils import Event
 from entities.queries import QueryT
 
 class GUI:
@@ -44,7 +44,7 @@ class GUI:
 
     def update_source(self, query: QueryT):
         [el.add(0) for el in self.gui_sources]
-        if query.state == Event.WAITING_SOURCE:
+        if query.state == QueryState.FROM_SOURCE:
             self.gui_sources[query.n_source].change_current(1, text=query.point_to_str())
 
     def update_buffer(self):

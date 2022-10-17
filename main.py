@@ -4,13 +4,13 @@ import random
 
 import constants
 import my_time
-from utils import Event
 from dispatchers.buffer_extract_dispatcher import BufferExtractDispatcher
 from dispatchers.buffer_put_dispatcher import BufferPutDispatcher
 from entities.instrument import Instrument
 from dispatchers.load_instrument_dispatcher import LoadInstrumentDispatcher
 from utils.sources_processor import SourcesProcessor, QueryT
 from entities.source import Source
+from handler_manager import HandlerManager
 
 random.seed(10)
 sources = [Source(0.3) for _ in range(0, constants.N_SOURCES)]
@@ -22,31 +22,11 @@ put_disp = BufferPutDispatcher(max_size=constants.N_BUFFERS, buffers=buffers)
 extract_disp = BufferExtractDispatcher(buffers=buffers, instruments=instruments, heap_que=heap_que)
 load_disp = LoadInstrumentDispatcher(buffer_extract_dispatcher=extract_disp, instruments=instruments,
                                      heap_queries=heap_que)
+manager = HandlerManager(sp=sp, put_disp=put_disp, extract_disp=extract_disp, load_disp=load_disp)
 
 sp.set_next_handler(put_disp).set_next_handler(extract_disp).set_next_handler(load_disp)
 
 sp.gather_queries()
-# print(que)
-
-# while heap_que:
-#     print("HEAPQUE")
-#     print(heap_que)
-#     print("BUFFERS")
-#     print(buffers)
-#     que_query: QueryT = heappop(heap_que)
-#     if que_query.end_time > my_time.time:
-#         sleep(que_query.end_time - my_time.time)
-#         my_time.time = que_query.end_time
-#
-#     print("NEW STATE:\n", que_query)
-#     if que_query.state == Event.WAITING_SOURCE:
-#         sp.handle(que_query)
-#     elif que_query.state == Event.IN_INSTRUMENT:
-#         instruments[que_query.n_source].release()
-#         print("RELEASE INSTRUMENT HANDLER")
-#         extract_disp.handle()
-#
-#     print("priority packet:", extract_disp.priority_packet)
 
 def update():
     print("HEAPQUE")
@@ -60,13 +40,7 @@ def update():
         my_time.time = que_query.end_time
 
     print("NEW STATE:\n", que_query)
-    if que_query.state == Event.WAITING_SOURCE:
-        sp.handle(que_query)
-    elif que_query.state == Event.IN_INSTRUMENT:
-        instruments[que_query.n_instr].release()
-        put_disp.refused_query = None
-        print("RELEASE INSTRUMENT HANDLER")
-        extract_disp.handle()
+    manager.process_new_event(que_query)
 
     print("priority packet:", extract_disp.priority_packet)
     return que_input

@@ -1,10 +1,8 @@
-from datetime import datetime, timedelta
 from heapq import heappush as insert
 
 import my_time
+from entities import QueryState
 from handlers.handler import Handler
-from my_time import time
-from utils import Event
 from entities.source import Source
 from entities.queries import QueryT
 
@@ -23,7 +21,7 @@ class SourcesProcessor(Handler):
                    QueryT(end_time=query.time + my_time.time,
                           n_source=pos,
                           n_query=query.n_query,
-                          state=Event.WAITING_SOURCE))
+                          state=QueryState.FROM_SOURCE))
 
     def gen_new_query(self, n_source):
         q = self.sources[n_source].gen_query()
@@ -31,11 +29,9 @@ class SourcesProcessor(Handler):
         new_query = QueryT(end_time=my_time.time + q.time,
                            n_source=n_source,
                            n_query=q.n_query,
-                           state=Event.WAITING_SOURCE)
+                           state=QueryState.FROM_SOURCE)
         insert(self.heap_que, new_query)
 
     def handle(self, query: QueryT):
-        if query.state == Event.WAITING_SOURCE:
-            self.gen_new_query(query.n_source)
-            query.state = Event.READY_SOURCE
-            self.next_step_handler.handle(query)
+        self.gen_new_query(query.n_source)
+        self.next_step_handler.handle(query)

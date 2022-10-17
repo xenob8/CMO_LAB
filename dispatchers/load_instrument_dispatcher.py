@@ -2,9 +2,9 @@ from datetime import datetime, timedelta
 from heapq import heappush
 
 import my_time
+from entities import QueryState
 from handlers.handler import Handler
 from my_time import time
-from utils import Event
 from entities.instrument import Instrument
 from utils.sources_processor import QueryT
 
@@ -16,9 +16,8 @@ class LoadInstrumentDispatcher(Handler):
         self.heap_queries = heap_queries
 
     def handle(self, query: QueryT):
-        if query.state == Event.READY_TO_SERVICE:
-            self.push_instrument(query)
-            query.state = Event.IN_INSTRUMENT
+        self.push_instrument(query)
+        query.state = QueryState.FROM_INSTRUMENT
 
     def push_instrument(self, query: QueryT):
         free_instr, n_instr = self.__find_free_instrument()
