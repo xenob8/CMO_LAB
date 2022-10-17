@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 from heapq import heappush
 
+import my_time
 from handlers.handler import Handler
+from my_time import time
 from utils import Event
 from entities.instrument import Instrument
 from utils.sources_processor import QueryT
@@ -22,7 +24,7 @@ class LoadInstrumentDispatcher(Handler):
         free_instr = self.__find_free_instrument()
         end_time = free_instr.run()
         query.start_time = query.end_time
-        query.end_time = datetime.now() + timedelta(seconds=end_time)
+        query.end_time = my_time.time + end_time
         heappush(self.heap_queries, query)
 
     def __find_free_instrument(self) -> Instrument:

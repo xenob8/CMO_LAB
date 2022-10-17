@@ -1,8 +1,11 @@
-import time
+from time import sleep
+
+
 from datetime import datetime
 from heapq import *
 
 import constants
+import my_time
 from utils import Event
 from dispatchers.buffer_extract_dispatcher import BufferExtractDispatcher
 from dispatchers.buffer_put_dispatcher import BufferPutDispatcher
@@ -11,8 +14,8 @@ from dispatchers.load_instrument_dispatcher import LoadInstrumentDispatcher
 from utils.sources_processor import SourcesProcessor, QueryT
 from entities.source import Source
 
-sources = [Source(0.5) for _ in range(0, constants.N_SOURCES)]
-instruments = [Instrument(0.5) for _ in range(0, constants.N_SOURCES)]
+sources = [Source(0.3) for _ in range(0, constants.N_SOURCES)]
+instruments = [Instrument(0.3) for _ in range(0, constants.N_SOURCES)]
 buffers: list[QueryT] = []
 heap_que = []
 sp = SourcesProcessor(sources=sources, heap_que=heap_que)
@@ -32,9 +35,9 @@ while heap_que:
     print("BUFFERS")
     print(buffers)
     que_query: QueryT = heappop(heap_que)
-    now_time = datetime.now()
-    if que_query.end_time > now_time:
-        time.sleep((que_query.end_time - now_time).seconds)
+    if que_query.end_time > my_time.time:
+        sleep(que_query.end_time - my_time.time)
+        my_time.time = que_query.end_time
 
     print("NEW STATE:\n", que_query)
     if que_query.state == Event.WAITING_SOURCE:
@@ -45,5 +48,7 @@ while heap_que:
         extract_disp.handle()
 
     print("priority packet:", extract_disp.priority_packet)
+
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
