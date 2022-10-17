@@ -14,7 +14,6 @@ from entities.source import Source
 sources = [Source(0.5) for _ in range(0, constants.N_SOURCES)]
 instruments = [Instrument(0.5) for _ in range(0, constants.N_SOURCES)]
 buffers: list[QueryT] = []
-
 heap_que = []
 sp = SourcesProcessor(sources=sources, heap_que=heap_que)
 put_disp = BufferPutDispatcher(max_size=constants.N_BUFFERS, buffers=buffers)
@@ -45,5 +44,6 @@ while heap_que:
         print("RELEASE INSTRUMENT HANDLER")
         extract_disp.handle()
 
+    print("priority packet:", extract_disp.priority_packet)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

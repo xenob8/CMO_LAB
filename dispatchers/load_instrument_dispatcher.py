@@ -20,7 +20,7 @@ class LoadInstrumentDispatcher(Handler):
 
     def push_instrument(self, query: QueryT):
         free_instr = self.__find_free_instrument()
-        end_time = free_instr.run(start_time=query.end_time)
+        end_time = free_instr.run()
         query.start_time = query.end_time
         query.end_time = datetime.now() + timedelta(seconds=end_time)
         heappush(self.heap_queries, query)
