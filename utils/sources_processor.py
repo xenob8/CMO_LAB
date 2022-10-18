@@ -9,9 +9,11 @@ from entities.queries import QueryT
 
 
 class SourcesProcessor(Handler):
-    def __init__(self, heap_que: list[QueryT]):
+    def __init__(self, heap_que: list[QueryT], max_queries):
         self.sources: list[Source] = [Source(0.3) for _ in range(0, constants.N_SOURCES)]
         self.heap_que = heap_que
+        self.MAX_N_QUERIES = max_queries
+        self.total_gen_queries = 0
         self.next_step_handler = None
 
     def init(self):
@@ -33,5 +35,9 @@ class SourcesProcessor(Handler):
         insert(self.heap_que, new_query)
 
     def handle(self, query: QueryT):
+        if self.total_gen_queries == self.MAX_N_QUERIES:
+            self.next_step_handler.handle(query)
+            return
         self.gen_new_query(query.n_source)
+        self.total_gen_queries +=1
         self.next_step_handler.handle(query)
