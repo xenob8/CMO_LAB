@@ -1,5 +1,6 @@
 from heapq import heappush as insert
 
+import constants
 import my_time
 from entities import QueryState
 from handlers.handler import Handler
@@ -8,13 +9,12 @@ from entities.queries import QueryT
 
 
 class SourcesProcessor(Handler):
-    def __init__(self, sources: list[Source], heap_que: list[QueryT]):
-        self.sources = sources
+    def __init__(self, heap_que: list[QueryT]):
+        self.sources: list[Source] = [Source(0.3) for _ in range(0, constants.N_SOURCES)]
         self.heap_que = heap_que
         self.next_step_handler = None
 
-
-    def gather_queries(self):
+    def init(self):
         for pos, source in enumerate(self.sources):
             query = source.gen_query()
             insert(self.heap_que,

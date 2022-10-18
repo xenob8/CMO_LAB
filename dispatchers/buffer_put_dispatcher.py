@@ -1,14 +1,15 @@
 from collections import namedtuple
 
+import constants
 from handlers.handler import Handler
 from utils.sources_processor import QueryT
 
 
 
 class BufferPutDispatcher(Handler):
-    def __init__(self, buffers: list[QueryT], max_size):
-        self.buffers = buffers
-        self.max_size = max_size
+    def __init__(self):
+        self.buffers:list[QueryT] = []
+        self.max_size = constants.N_BUFFERS
         self.next_step_handler = None
         self.refused_query = None
 

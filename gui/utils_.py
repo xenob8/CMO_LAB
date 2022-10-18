@@ -48,7 +48,7 @@ class GUI:
             self.gui_sources[query.n_source].change_current(1, text=query.point_to_str())
 
     def update_buffer(self):
-        for gui_b, b in zip_longest(self.gui_buffers, main.buffers):
+        for gui_b, b in zip_longest(self.gui_buffers, main.put_disp.buffers):
             if b:
                 gui_b.add(1, text=b.point_to_str())
             else:

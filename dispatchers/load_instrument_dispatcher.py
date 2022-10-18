@@ -10,8 +10,7 @@ from utils.sources_processor import QueryT
 
 
 class LoadInstrumentDispatcher(Handler):
-    def __init__(self, buffer_extract_dispatcher, instruments: list[Instrument], heap_queries):
-        self.buffer_extract_dispatcher = buffer_extract_dispatcher
+    def __init__(self, instruments: list[Instrument], heap_queries):
         self.instruments = instruments
         self.heap_queries = heap_queries
 
