@@ -26,6 +26,7 @@ class LoadInstrumentDispatcher(Handler):
         query.start_time = query.end_time
         query.end_time = my_time.time + end_time
         stats_collector.add_time_in_instr(query.n_source, query.end_time - query.start_time)
+        stats_collector.add_instrument_time(query.n_instr, query.end_time - query.start_time)
         heappush(self.heap_queries, query)
 
     def __find_free_instrument(self) -> (Instrument, int):

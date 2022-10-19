@@ -17,6 +17,8 @@ class StatData:
         self.avg_instr_time = statistics.fmean(self.times_in_instr)
         self.avg_total_time = self.avg_buffer_time + self.avg_instr_time
         self.refuse_prob = self.n_cancels / self.n_queries
+        self.dispersion_buffer = statistics.pvariance(self.times_in_buffer)
+        self.dispersion_instr = statistics.pvariance(self.times_in_instr)
 
     def __str__(self):
         self.compute()
