@@ -12,12 +12,14 @@ class BufferPutDispatcher(Handler):
         self.max_size = constants.N_BUFFERS
         self.next_step_handler = None
         self.refused_query = None
+        self.n_refused = 0
 
     def handle(self, query: QueryT):
         if self.add(query):
             self.next_step_handler.handle()
         else:
             self.refused_query = query
+            self.n_refused +=1
 
     def add(self, query: QueryT):
         if len(self.buffers) < self.max_size:

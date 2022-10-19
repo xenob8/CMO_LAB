@@ -12,6 +12,7 @@ from entities import QueryT
 from entities.instrument import Instrument
 from handler_manager import HandlerManager
 from utils.sources_processor import SourcesProcessor
+import logging
 
 
 class App():
@@ -60,9 +61,18 @@ class App():
         # return response # for web
         return True
 
-    def run(self):
+    def run(self, max_n_queries=constants.MAX_N_QUERIES):
+        self.sp.total_gen_queries = 0
+        self.put_disp.n_refused = 0
+        self.sp.MAX_N_QUERIES = max_n_queries
         while True:
             print(self.sp.total_gen_queries)
             if not self.update():
                 break
+
+    def refresh(self):
+        self.sp.total_gen_queries = 0
+        self.put_disp.n_refused = 0
+        my_time.time = 0
+        self.sp.init()
 

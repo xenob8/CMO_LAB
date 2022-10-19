@@ -35,8 +35,7 @@ class SourcesProcessor(Handler):
         insert(self.heap_que, new_query)
 
     def handle(self, query: QueryT):
-        if self.total_gen_queries == self.MAX_N_QUERIES:
-            self.next_step_handler.handle(query)
+        if self.total_gen_queries == self.MAX_N_QUERIES-1:
             return
         self.gen_new_query(query.n_source)
         self.total_gen_queries +=1
