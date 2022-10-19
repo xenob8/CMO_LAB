@@ -1,8 +1,10 @@
 from copy import copy
 from functools import reduce
 
+import my_time
 from handlers.handler import Handler
 from entities.instrument import Instrument
+from stats import stats_collector
 from utils.sources_processor import QueryT
 
 
@@ -37,6 +39,8 @@ class BufferExtractDispatcher(Handler):
     def handle(self):
         query = self.get_query()
         if query:
+            time_in_buffer = my_time.time - query.end_time
+            stats_collector.add_time_in_buffer(query.n_source, time_in_buffer)
             self.next_step_handler.handle(query)
 
 

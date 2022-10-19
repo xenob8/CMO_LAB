@@ -12,9 +12,8 @@ from entities import QueryT
 from entities.instrument import Instrument
 from handler_manager import HandlerManager
 from utils.sources_processor import SourcesProcessor
-import logging
 
-
+#todo bug with sp init from file and run with num_q as arg
 class App():
     def __init__(self, max_queries=constants.MAX_N_QUERIES):
         random.seed(10)
@@ -29,10 +28,10 @@ class App():
                                       load_disp=self.load_disp)
 
         self.sp.set_next_handler(self.put_disp).set_next_handler(self.extract_disp).set_next_handler(self.load_disp)
-
+        self.last_source_query: QueryT = None
         self.sp.init()
 
-    def update(self):
+    def update(self): # after init
         response = collections.defaultdict(dict)
         print("HEAPQUE")
         print(self.heap_que)
@@ -42,13 +41,14 @@ class App():
             return False
         que_query: QueryT = heappop(self.heap_que)
         que_input = copy(que_query)
+        self.last_source_query = copy(que_query)
         response["inputs"]["n_source"] = que_input.n_source
         response["inputs"]["n_query"] = que_input.n_query
         if que_query.end_time > my_time.time:
             # sleep(que_query.end_time - my_time.time)
             my_time.time = que_query.end_time
 
-        print("NEW STATE:\n", que_query)
+        print("NEW STATE------------------------------:\n", que_query)
         self.manager.process_new_event(que_query)
 
         print("priority packet:", self.extract_disp.priority_packet)
@@ -57,22 +57,23 @@ class App():
         response["instruments"] = [instr.query.point_to_str() if instr.is_busy else '-' for instr in self.instruments]
         response["cancel"] = self.put_disp.refused_query.point_to_str() if self.put_disp.refused_query else "-"
         # print(response) # for web
-        # return que_input # for waveform
         # return response # for web
         return True
 
+    def test_run(self):
+        while True:
+            if not self.update():
+                return
+
     def run(self, max_n_queries=constants.MAX_N_QUERIES):
-        self.sp.total_gen_queries = 0
-        self.put_disp.n_refused = 0
         self.sp.MAX_N_QUERIES = max_n_queries
         while True:
             print(self.sp.total_gen_queries)
             if not self.update():
-                break
+                return
 
     def refresh(self):
         self.sp.total_gen_queries = 0
         self.put_disp.n_refused = 0
         my_time.time = 0
         self.sp.init()
-

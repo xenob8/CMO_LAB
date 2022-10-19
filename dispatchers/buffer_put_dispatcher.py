@@ -2,6 +2,7 @@ from collections import namedtuple
 
 import constants
 from handlers.handler import Handler
+from stats import stats_collector
 from utils.sources_processor import QueryT
 
 
@@ -20,6 +21,7 @@ class BufferPutDispatcher(Handler):
         else:
             self.refused_query = query
             self.n_refused +=1
+            stats_collector.add_cancel(query.n_source)
 
     def add(self, query: QueryT):
         if len(self.buffers) < self.max_size:

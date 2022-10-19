@@ -1,18 +1,7 @@
-import sys
-
-f = open('output.txt','w')
 from app import App
+from stats.stats_collector import stats_collector
+
 app = App()
-app.run(100)
-print(app.put_disp.n_refused, file=f)
-app.refresh()
-app.run(100)
-print(app.put_disp.n_refused, file=f)
-app.refresh()
-app.run(100)
-print(app.put_disp.n_refused, file=f)
-app.refresh()
-app.run(100)
-print(app.put_disp.n_refused, file=f)
-app.refresh()
+app.run()
+stats_collector.print_stats()
 

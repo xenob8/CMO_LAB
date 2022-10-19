@@ -7,10 +7,12 @@ from matplotlib import pyplot as plt
 import constants
 # from gui_entities import QueryT
 
-import main
+from app import App
 from entities import QueryState
 from gui_entities import GuiElement
 from entities.queries import QueryT
+
+app = App()
 
 class GUI:
     x = [0]
@@ -48,21 +50,21 @@ class GUI:
             self.gui_sources[query.n_source].change_current(1, text=query.point_to_str())
 
     def update_buffer(self):
-        for gui_b, b in zip_longest(self.gui_buffers, main.put_disp.buffers):
+        for gui_b, b in zip_longest(self.gui_buffers, app.put_disp.buffers):
             if b:
                 gui_b.add(1, text=b.point_to_str())
             else:
                 gui_b.add(0)
 
     def update_instruments(self):
-        for gui_i, i in zip(self.gui_instruments, main.instruments):
+        for gui_i, i in zip(self.gui_instruments, app.instruments):
             if i.is_busy:
                 gui_i.add(1, text=i.query.point_to_str())
             else:
                 gui_i.add(0)
 
     def update_refuse(self):
-        q = main.put_disp.refused_query
+        q = app.put_disp.refused_query
         if q:
             self.gui_refuse.add(1, q.point_to_str())
         else:
@@ -72,7 +74,10 @@ class GUI:
     def press(self, event):
         print('press', event.key)
         if event.key == 'enter':
-            q = main.update()
+            if not app.update():
+                print("ENDDDDDDDDDDDD")
+                return
+            q = app.last_source_query
             print("DROW INPUT", q)
             self.update_source(q)
             self.update_buffer()

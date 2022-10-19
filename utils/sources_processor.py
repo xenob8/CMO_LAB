@@ -1,5 +1,4 @@
 from heapq import heappush as insert
-
 import constants
 import my_time
 from entities import QueryState
@@ -7,6 +6,7 @@ from handlers.handler import Handler
 from entities.source import Source
 from entities.queries import QueryT
 
+from stats.stats_collector import stats_collector
 
 class SourcesProcessor(Handler):
     def __init__(self, heap_que: list[QueryT], max_queries):
@@ -18,7 +18,11 @@ class SourcesProcessor(Handler):
 
     def init(self):
         for pos, source in enumerate(self.sources):
+            if self.total_gen_queries == self.MAX_N_QUERIES:
+                return
             query = source.gen_query()
+            stats_collector.add_query(pos)
+            self.total_gen_queries +=1
             insert(self.heap_que,
                    QueryT(end_time=query.time + my_time.time,
                           n_source=pos,
@@ -34,9 +38,11 @@ class SourcesProcessor(Handler):
                            state=QueryState.FROM_SOURCE)
         insert(self.heap_que, new_query)
 
-    def handle(self, query: QueryT):
-        if self.total_gen_queries == self.MAX_N_QUERIES-1:
-            return
-        self.gen_new_query(query.n_source)
-        self.total_gen_queries +=1
-        self.next_step_handler.handle(query)
+    def handle(self, query: QueryT): # handle query from heap
+        if self.total_gen_queries == self.MAX_N_QUERIES:
+            self.next_step_handler.handle(query)
+        else:
+            stats_collector.add_query(query.n_source)
+            self.gen_new_query(query.n_source)
+            self.total_gen_queries +=1
+            self.next_step_handler.handle(query)

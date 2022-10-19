@@ -6,6 +6,7 @@ from entities import QueryState
 from handlers.handler import Handler
 from my_time import time
 from entities.instrument import Instrument
+from stats import stats_collector
 from utils.sources_processor import QueryT
 
 
@@ -24,6 +25,7 @@ class LoadInstrumentDispatcher(Handler):
         query.n_instr = n_instr
         query.start_time = query.end_time
         query.end_time = my_time.time + end_time
+        stats_collector.add_time_in_instr(query.n_source, query.end_time - query.start_time)
         heappush(self.heap_queries, query)
 
     def __find_free_instrument(self) -> (Instrument, int):

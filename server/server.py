@@ -1,15 +1,32 @@
+import collections
+
 import flask
 
 import constants
-import main
 from flask import Flask
+
+import my_time
+from app import App
+from entities import QueryState
+
+cmo = App(100)
 
 app = Flask(__name__)
 
 @app.route("/next", methods=['GET'])
 def hello_world():
-    # resp = main.update()
-    resp = flask.make_response(main.update())
+    cmo.update()
+    response = collections.defaultdict(dict)
+    if cmo.last_source_query.state == QueryState.FROM_SOURCE:
+        response["inputs"]["n_source"] = cmo.last_source_query.n_source
+        response["inputs"]["n_query"] = cmo.last_source_query.n_query
+    else:
+        response["inputs"] = None
+    response["buffers"] = [q.point_to_str() for q in cmo.put_disp.buffers]
+    response["instruments"] = [instr.query.point_to_str() if instr.is_busy else '-' for instr in cmo.instruments]
+    response["cancel"] = cmo.put_disp.refused_query.point_to_str() if cmo.put_disp.refused_query else "-"
+    response["time"] = round(my_time.time,ndigits=3)
+    resp = flask.make_response(response)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 
