@@ -1,8 +1,10 @@
 from copy import copy
 from functools import reduce
 
+import my_time
 from handlers.handler import Handler
 from entities.instrument import Instrument
+from stats import stats_collector
 from utils.sources_processor import QueryT
 
 
@@ -29,7 +31,6 @@ class BufferExtractDispatcher(Handler):
             print(q)
             return copy(q)
 
-
     def __find_query_by_packet(self, priority_packet):
         if priority_packet:
             return self.__find_next_query_by_packet(priority_packet)
@@ -37,8 +38,9 @@ class BufferExtractDispatcher(Handler):
     def handle(self):
         query = self.get_query()
         if query:
+            time_in_buffer = my_time.time - query.end_time
+            stats_collector.add_time_in_buffer(query.n_source, time_in_buffer)
             self.next_step_handler.handle(query)
-
 
     def __find_min_by_source_n(self):
         def comparator(a: QueryT, b: QueryT):
@@ -50,9 +52,8 @@ class BufferExtractDispatcher(Handler):
 
         return reduce(comparator, self.buffers)
 
-
     def __is_avaliable_instrument(self):
-        return any(instr.is_busy==False for instr in self.instruments)
+        return any(instr.is_busy == False for instr in self.instruments)
 
     def __find_next_query_by_packet(self, n_source):
         return min((query for query in self.buffers if query.n_source == n_source),

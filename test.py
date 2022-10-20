@@ -1,16 +1,11 @@
-import random
-import sys
-from itertools import zip_longest
+from app import App
+from stats import stats_collector
 
-from matplotlib import pyplot as plt
+app = App(1030)
+app.run()
 
-import constants
-from entities import QueryT
-
-import main
-from utils import Event
-
-
-a = [1,2,3]
-b = [1,1]
-print(a + b)
+stats_collector.compute_stats()
+stats_collector.show_sources_table()
+stats_collector.show_instruments_table()
+print(stats_collector.source_table_dict())
+# print(stats_collector.instr_stats)
