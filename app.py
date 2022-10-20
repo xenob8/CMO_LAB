@@ -16,7 +16,8 @@ from utils.sources_processor import SourcesProcessor
 
 out = sys.stdout
 
-#todo bug with sp init from file and run with num_q as arg
+
+# todo bug with sp init from file and run with num_q as arg
 class App():
     def __init__(self, max_queries=constants.MAX_N_QUERIES):
         # my_time.time = 0
@@ -35,7 +36,7 @@ class App():
         self.last_source_query: QueryT = None
         self.sp.init()
 
-    def update(self): # after init
+    def update(self):  # after init
         try:
             f = open(file="log.txt", mode="w")
             sys.stdout = f
@@ -62,14 +63,14 @@ class App():
             print("priority packet:", self.extract_disp.priority_packet)
 
             response["buffers"] = [q.point_to_str() for q in self.put_disp.buffers]
-            response["instruments"] = [instr.query.point_to_str() if instr.is_busy else '-' for instr in self.instruments]
+            response["instruments"] = [instr.query.point_to_str() if instr.is_busy else '-' for instr in
+                                       self.instruments]
             response["cancel"] = self.put_disp.refused_query.point_to_str() if self.put_disp.refused_query else "-"
             sys.stdout = out
             return True
         finally:
             sys.stdout = out
             f.close()
-
 
     def run(self):
         while True:

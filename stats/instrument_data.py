@@ -1,6 +1,3 @@
-import statistics
-
-
 class InstrumentData:
     def __init__(self):
         self.work_times = []

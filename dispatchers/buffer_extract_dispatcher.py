@@ -31,7 +31,6 @@ class BufferExtractDispatcher(Handler):
             print(q)
             return copy(q)
 
-
     def __find_query_by_packet(self, priority_packet):
         if priority_packet:
             return self.__find_next_query_by_packet(priority_packet)
@@ -43,7 +42,6 @@ class BufferExtractDispatcher(Handler):
             stats_collector.add_time_in_buffer(query.n_source, time_in_buffer)
             self.next_step_handler.handle(query)
 
-
     def __find_min_by_source_n(self):
         def comparator(a: QueryT, b: QueryT):
             if b.n_source < a.n_source:
@@ -54,9 +52,8 @@ class BufferExtractDispatcher(Handler):
 
         return reduce(comparator, self.buffers)
 
-
     def __is_avaliable_instrument(self):
-        return any(instr.is_busy==False for instr in self.instruments)
+        return any(instr.is_busy == False for instr in self.instruments)
 
     def __find_next_query_by_packet(self, n_source):
         return min((query for query in self.buffers if query.n_source == n_source),

@@ -1,11 +1,9 @@
-from datetime import datetime, timedelta
 from heapq import heappush
 
 import my_time
 from entities import QueryState
-from handlers.handler import Handler
-from my_time import time
 from entities.instrument import Instrument
+from handlers.handler import Handler
 from stats import stats_collector
 from utils.sources_processor import QueryT
 
@@ -30,7 +28,7 @@ class LoadInstrumentDispatcher(Handler):
         # print(f"INSTRUMENT START TIME: {query.n_instr}, {query.start_time}")
         # print(f"INSTRUMENT TIME: {query.n_instr}, {query.end_time - query.start_time}")
         # print("Current time:",my_time.time)
-        #todo надо брать разницу не с началом генерации сигнала, а с текущим временем,
+        # todo надо брать разницу не с началом генерации сигнала, а с текущим временем,
         # некоторое время он лежал в буфере
         heappush(self.heap_queries, query)
 

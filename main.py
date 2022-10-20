@@ -17,5 +17,3 @@ stats_collector.show_instruments_table()
 
 # gui = GUI(opt_queries)
 # gui.run()
-
-

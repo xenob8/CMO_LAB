@@ -60,8 +60,8 @@ class StatsCollector():
         rows = collections.defaultdict(dict)
         for i, stat_data in enumerate(self.source_stats):
             rows[f'{i}'] = [f"Soruce {i}", stat_data.n_queries, stat_data.refuse_prob, stat_data.avg_total_time,
-                          stat_data.avg_buffer_time, stat_data.avg_instr_time, stat_data.dispersion_buffer,
-                          stat_data.dispersion_instr]
+                            stat_data.avg_buffer_time, stat_data.avg_instr_time, stat_data.dispersion_buffer,
+                            stat_data.dispersion_instr]
         return rows
 
     def instruments_table_dict(self):
@@ -71,7 +71,6 @@ class StatsCollector():
         for i, instr_data in enumerate(self.instr_stats):
             rows[i] = [f'Instrument {i}', round(instr_data.total_time / total_global_time, 3)]
         return rows
-
 
     def print_stats(self):
         print(self.source_stats)

@@ -8,6 +8,7 @@ from entities.queries import QueryT
 
 from stats.stats_collector import stats_collector
 
+
 class SourcesProcessor(Handler):
     def __init__(self, heap_que: list[QueryT], max_queries):
         self.sources: list[Source] = [Source(0.3) for _ in range(0, constants.N_SOURCES)]
@@ -22,7 +23,7 @@ class SourcesProcessor(Handler):
                 return
             query = source.gen_query()
             stats_collector.add_query(pos)
-            self.total_gen_queries +=1
+            self.total_gen_queries += 1
             insert(self.heap_que,
                    QueryT(end_time=query.time + my_time.time,
                           n_source=pos,
@@ -38,11 +39,11 @@ class SourcesProcessor(Handler):
                            state=QueryState.FROM_SOURCE)
         insert(self.heap_que, new_query)
 
-    def handle(self, query: QueryT): # handle query from heap
+    def handle(self, query: QueryT):  # handle query from heap
         if self.total_gen_queries == self.MAX_N_QUERIES:
             self.next_step_handler.handle(query)
         else:
             stats_collector.add_query(query.n_source)
             self.gen_new_query(query.n_source)
-            self.total_gen_queries +=1
+            self.total_gen_queries += 1
             self.next_step_handler.handle(query)

@@ -1,20 +1,14 @@
 import collections
 
 import flask
-
-import constants
 from flask import Flask
 
+import constants
 import my_time
 from app import App
 from entities import QueryState
 from stats import stats_collector
-from utils.smo_setuper import count_optimal_query_count
 
-# opt_queries = count_optimal_query_count()
-# stats_collector.reset()
-# cmo = App(opt_queries)
-# print("optimal n_queries:", opt_queries)
 cmo = App()
 
 server = Flask(__name__)

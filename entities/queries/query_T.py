@@ -1,5 +1,4 @@
 # QueryT = namedtuple('Query', 'time n_source n_query')
-from datetime import datetime
 
 import my_time
 
@@ -17,7 +16,8 @@ class QueryT():
 
     def __str__(self):
         return f'{self.state},time left:{self.end_time - my_time.time}, ({self.n_source, self.n_query}, end time: {self.end_time})'
-    #.strftime("%M %S")
+
+    # .strftime("%M %S")
 
     def __repr__(self):
         return self.__str__()
