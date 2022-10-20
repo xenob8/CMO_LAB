@@ -12,7 +12,7 @@ def count_optimal_query_count(init_queries=constants.MAX_N_QUERIES):  #:App):
     print(f"refused: {n_refused}, toltal {init_queries}")
     print(f"new refused prob {refused_prob}")
     n1 = __count_new_query_count(refuse_prob=refused_prob)
-    print(n1)
+    print("new n:", n1)
     app = App(int(n1))
     app.run()
 

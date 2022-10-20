@@ -11,11 +11,12 @@ from entities import QueryState
 from stats import stats_collector
 from utils.smo_setuper import count_optimal_query_count
 
-opt_queries = count_optimal_query_count()
-stats_collector.reset()
-print("optimal n_queries:", opt_queries)
+# opt_queries = count_optimal_query_count()
+# stats_collector.reset()
+# cmo = App(opt_queries)
+# print("optimal n_queries:", opt_queries)
+cmo = App()
 
-cmo = App(opt_queries)
 server = Flask(__name__)
 
 
