@@ -1,10 +1,11 @@
-from tabulate import tabulate
+from app import App
+from stats import stats_collector
 
-table = [['First Name', 'Last Name', 'Age'],
-         ['John', 'Smith', 39], ['Mary', 'Jane', 25],
-         ['Jennifer', 'Doe', 28]]
+app = App(1030)
+app.run()
 
-rows = []
-rows.append([1,2,3])
-print(rows)
-print(tabulate(table, headers='firstrow', tablefmt='grid'))
+stats_collector.compute_stats()
+stats_collector.show_sources_table()
+stats_collector.show_instruments_table()
+print(stats_collector.source_table_dict())
+# print(stats_collector.instr_stats)

@@ -7,7 +7,7 @@ class InstrumentData:
         self.total_time = 0
 
     def compute(self):
-        self.total_time = round(sum(self.work_times),3)
+        self.total_time = round(sum(self.work_times), 3)
 
     def __str__(self):
         self.compute()

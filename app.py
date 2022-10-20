@@ -1,5 +1,6 @@
 import collections
 import random
+import sys
 from copy import copy
 from heapq import heappop
 
@@ -13,9 +14,12 @@ from entities.instrument import Instrument
 from handler_manager import HandlerManager
 from utils.sources_processor import SourcesProcessor
 
+out = sys.stdout
+
 #todo bug with sp init from file and run with num_q as arg
 class App():
     def __init__(self, max_queries=constants.MAX_N_QUERIES):
+        # my_time.time = 0
         random.seed(10)
         self.instruments = [Instrument(0.3) for _ in range(0, constants.N_INSTUMENTS)]
         self.heap_que = []
@@ -32,48 +36,48 @@ class App():
         self.sp.init()
 
     def update(self): # after init
-        response = collections.defaultdict(dict)
-        print("HEAPQUE")
-        print(self.heap_que)
-        print("BUFFERS")
-        print(self.put_disp.buffers)
-        if not self.heap_que:
-            return False
-        que_query: QueryT = heappop(self.heap_que)
-        que_input = copy(que_query)
-        self.last_source_query = copy(que_query)
-        response["inputs"]["n_source"] = que_input.n_source
-        response["inputs"]["n_query"] = que_input.n_query
-        if que_query.end_time > my_time.time:
-            # sleep(que_query.end_time - my_time.time)
-            my_time.time = que_query.end_time
+        try:
+            f = open(file="log.txt", mode="w")
+            sys.stdout = f
+            response = collections.defaultdict(dict)
+            print("HEAPQUE")
+            print(self.heap_que)
+            print("BUFFERS")
+            print(self.put_disp.buffers)
+            if not self.heap_que:
+                # sys.stdout = out
+                return False
+            que_query: QueryT = heappop(self.heap_que)
+            que_input = copy(que_query)
+            self.last_source_query = copy(que_query)
+            response["inputs"]["n_source"] = que_input.n_source
+            response["inputs"]["n_query"] = que_input.n_query
+            if que_query.end_time > my_time.time:
+                # sleep(que_query.end_time - my_time.time)
+                my_time.time = que_query.end_time
 
-        print("NEW STATE------------------------------:\n", que_query)
-        self.manager.process_new_event(que_query)
+            print("NEW STATE------------------------------:\n", que_query)
+            self.manager.process_new_event(que_query)
 
-        print("priority packet:", self.extract_disp.priority_packet)
+            print("priority packet:", self.extract_disp.priority_packet)
 
-        response["buffers"] = [q.point_to_str() for q in self.put_disp.buffers]
-        response["instruments"] = [instr.query.point_to_str() if instr.is_busy else '-' for instr in self.instruments]
-        response["cancel"] = self.put_disp.refused_query.point_to_str() if self.put_disp.refused_query else "-"
-        # print(response) # for web
-        # return response # for web
-        return True
+            response["buffers"] = [q.point_to_str() for q in self.put_disp.buffers]
+            response["instruments"] = [instr.query.point_to_str() if instr.is_busy else '-' for instr in self.instruments]
+            response["cancel"] = self.put_disp.refused_query.point_to_str() if self.put_disp.refused_query else "-"
+            sys.stdout = out
+            return True
+        finally:
+            sys.stdout = out
+            f.close()
 
-    def test_run(self):
+
+    def run(self):
         while True:
             if not self.update():
                 return
 
-    def run(self, max_n_queries=constants.MAX_N_QUERIES):
-        self.sp.MAX_N_QUERIES = max_n_queries
-        while True:
-            print(self.sp.total_gen_queries)
-            if not self.update():
-                return
-
-    def refresh(self):
-        self.sp.total_gen_queries = 0
-        self.put_disp.n_refused = 0
-        my_time.time = 0
-        self.sp.init()
+    # def refresh(self):
+    #     self.sp.total_gen_queries = 0
+    #     self.put_disp.n_refused = 0
+    #     my_time.time = 0
+    #     self.sp.init()
