@@ -18,6 +18,7 @@ class StatData:
         self.avg_total_time = round(self.avg_buffer_time + self.avg_instr_time, 3)
         self.refuse_prob = round(self.n_cancels / self.n_queries, 3)
         self.dispersion_buffer = round(statistics.pvariance(self.times_in_buffer), 3)
+        print("max time in buffer", max(self.times_in_buffer)/60)
         self.dispersion_instr = round(statistics.pvariance(self.times_in_instr), 3)
 
     def __str__(self):

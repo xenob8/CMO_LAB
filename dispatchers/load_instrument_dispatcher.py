@@ -4,7 +4,7 @@ import my_time
 from entities import QueryState
 from entities.instrument import Instrument
 from handlers.handler import Handler
-from stats import stats_collector
+from stats import singleton
 from utils.sources_processor import QueryT
 
 
@@ -22,8 +22,8 @@ class LoadInstrumentDispatcher(Handler):
         end_time = free_instr.run(query)
         query.n_instr = n_instr
         query.end_time = my_time.time + end_time
-        stats_collector.add_time_in_instr(query.n_source, query.end_time - my_time.time)
-        stats_collector.add_instrument_time(query.n_instr, query.end_time - my_time.time)
+        singleton.stats_collector.add_time_in_instr(query.n_source, query.end_time - my_time.time)
+        singleton.stats_collector.add_instrument_time(query.n_instr, query.end_time - my_time.time)
         # print(f"INSTRUMENT END TIME: {query.n_instr}, {query.end_time}")
         # print(f"INSTRUMENT START TIME: {query.n_instr}, {query.start_time}")
         # print(f"INSTRUMENT TIME: {query.n_instr}, {query.end_time - query.start_time}")

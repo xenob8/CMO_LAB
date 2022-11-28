@@ -4,7 +4,7 @@ from functools import reduce
 import my_time
 from handlers.handler import Handler
 from entities.instrument import Instrument
-from stats import stats_collector
+from stats import singleton
 from utils.sources_processor import QueryT
 
 
@@ -39,7 +39,7 @@ class BufferExtractDispatcher(Handler):
         query = self.get_query()
         if query:
             time_in_buffer = my_time.time - query.end_time
-            stats_collector.add_time_in_buffer(query.n_source, time_in_buffer)
+            singleton.stats_collector.add_time_in_buffer(query.n_source, time_in_buffer)
             self.next_step_handler.handle(query)
 
     def __find_min_by_source_n(self):

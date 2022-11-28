@@ -1,11 +1,9 @@
-from app import App
-from stats import stats_collector
+class A:
+    def __init__(self, num):
+        self.num = num
 
-app = App(1030)
-app.run()
+class Singleton:
+    def __init__(self, obj):
+        self.obj = obj
 
-stats_collector.compute_stats()
-stats_collector.show_sources_table()
-stats_collector.show_instruments_table()
-print(stats_collector.source_table_dict())
-# print(stats_collector.instr_stats)
+sing = Singleton(A(5))

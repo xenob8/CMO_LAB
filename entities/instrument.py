@@ -13,7 +13,7 @@ class Instrument():
     def release(self):
         self.is_busy = False
 
-    def run(self, query: QueryT):
+    def run(self, query: QueryT) -> int:
         self.is_busy = True
         self.query = query
-        return -1 / self.speed * math.log(random.uniform(0, 1))
+        return self.speed
