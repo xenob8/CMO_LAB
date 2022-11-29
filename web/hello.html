@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="script.js" defer></script>
+    <link href="style.css" rel="stylesheet">
+    <meta charset=utf-8>
+
+</head>
+<body>
+
+    <h2>Formalize schema</h2>
+
+
+    <div class="time" id="time">
+        <em style="">TIME &nbsp</em>
+        <div id="time_value">0</div>
+        &nbsp seconds
+    </div>
+
+    <div class="row">
+
+        <div class="input" id="inputs" style="background-color:#aaa;">
+<!--            <button>input</button>-->
+<!--            <button>input</button>-->
+<!--            <button>input</button>-->
+<!--            <button>input</button>-->
+<!--            <button>input</button>-->
+        </div>
+
+        <button class="cancel" id="cancel"> cancel </button>
+
+        <div class="buffers" id="buffers" style="background-color:#bbb;">
+    <!--        <button>Buffer</button>-->
+    <!--        <button>Buffer</button>-->
+    <!--        <button>Buffer</button>-->
+        </div>
+
+        <div class="instruments" id="instruments" style="background-color:#bbb;">
+    <!--        <button>Instument</button>-->
+    <!--        <button>Instument</button>-->
+    <!--        <button>Instument</button>-->
+    <!--        <button>Instument</button>-->
+        </div>
+    </div>
+
+    <button onclick="getNext()">next</button>
+    <button onclick="drawTable()">showTables</button>
+
+    <table id="source_table" style="width:100%">
+        <tr>
+            <th>Номер источника</th>
+            <th>кол-во заявок</th>
+            <th>p отк</th>
+            <th>Tпреб</th>
+            <th>Tбуф</th>
+            <th>Tобсл</th>
+            <th>Дбуф</th>
+            <th>Добсл</th>
+        </tr>
+    </table>
+
+    <table id="instruments_table" style="width:100%">
+        <tr>
+            <th>Номер прибора</th>
+            <th>коэф использования</th>
+        </tr>
+    </table>
+
+
+</body>
+</html>

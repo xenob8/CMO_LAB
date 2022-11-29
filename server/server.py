@@ -6,10 +6,19 @@ from flask import Flask
 import constants
 import my_time
 from app import App
+from app_config import AppConfig
 from entities import QueryState
-from stats import stats_collector
+from stats import singleton
 
-cmo = App()
+SMART_DOCTOR_TIME = 5 * 60
+MIDDLE_DOCRTOR_TIME = 6 * 60
+STUDENT_DOCTOR_TIME = 8 * 60
+
+doctors = [SMART_DOCTOR_TIME, SMART_DOCTOR_TIME, SMART_DOCTOR_TIME, MIDDLE_DOCRTOR_TIME, STUDENT_DOCTOR_TIME]
+
+config = AppConfig(max_queries=30240, sources_speed=[1 / 180, 1 / 360, 1 / 240], buffer_size=4,
+                   instruments_work_time=doctors)
+cmo = App(config)
 
 server = Flask(__name__)
 
@@ -34,8 +43,8 @@ def hello_world():
 
 @server.route("/init", methods=['GET'])
 def on_load():
-    init_values = {"n_sources": constants.N_SOURCES, "n_buffers": constants.N_BUFFERS,
-                   "n_instruments": constants.N_INSTUMENTS}
+    init_values = {"n_sources": len(config.sources_speed), "n_buffers": config.buffer_size,
+                   "n_instruments": len(config.instruments_work_time)}
     resp = flask.make_response(init_values)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
@@ -44,7 +53,7 @@ def on_load():
 @server.route("/finish")
 def finish():
     cmo.run()
-    stats_collector.compute_stats()
+    singleton.stats_collector.compute_stats()
     resp = flask.make_response({"time": round(my_time.time, 3)})
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
@@ -52,7 +61,7 @@ def finish():
 
 @server.route("/source_table")
 def source_table():
-    source_table = stats_collector.source_table_dict()
+    source_table = singleton.stats_collector.source_table_dict()
     resp = flask.make_response(source_table)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
@@ -60,7 +69,7 @@ def source_table():
 
 @server.route("/instruments_table")
 def instruments_table():
-    instr_table = stats_collector.instruments_table_dict()
+    instr_table = singleton.stats_collector.instruments_table_dict()
     resp = flask.make_response(instr_table)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp

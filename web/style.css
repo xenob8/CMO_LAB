@@ -1,0 +1,33 @@
+.input > *{
+    /*margin-bottom: 20px;*/
+    width: 100px;
+}
+
+.row {
+    display: flex;
+}
+
+table, th, td {
+    border:1px solid black;
+}
+
+.time{
+    display: flex;
+    font-size: 50px;
+}
+
+/* Create two equal columns that sits next to each other */
+.input, .buffers, .instruments {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 20px;
+    padding: 15px;
+    /*height: 300px; !* Should be removed. Only for demonstration *!*/
+}
+
+.cancel {
+    min-width:70px;
+}
